@@ -39,7 +39,7 @@ export function stageShot(api, params) {
     const scene = SCENES[params.scene];
     game.found = new Set(scene.differences.slice(0, params.found).map((d) => d.id));
     game.foundOrder = scene.differences.slice(0, params.found).map((d) => d.id);
-    game.score = params.found * 100;
+    game.score = params.found * 100 - 25; // 3 finds x 100, minus the 25-point hint already spent (hintsLeft 2) = 275
     game.clicks = params.found + 1;
     game.wrongClicks = 1;
     game.sceneStartedAt = now - 87400; // 1:27 on the clock
@@ -58,12 +58,15 @@ export function stageShot(api, params) {
     const scene = SCENES[params.scene];
     game.found = new Set(scene.differences.map((d) => d.id));
     game.foundOrder = scene.differences.map((d) => d.id);
-    game.score = 700 + 160;
+    // Scene 1: 20 s -> bonus 200 - 5*20 = 100 (700 finds + 100 = 800).
+    // Scene 2: 32 s -> bonus 200 - 5*32 = 40 (700 finds + 40 = 740).
+    // Score so far: 800 + 740 = 1540.
+    game.score = 1540;
     game.clicks = 8;
     game.wrongClicks = 1;
-    game.sceneTimesMs = [87400];
-    game.sceneScores = [160];
-    game.sceneElapsedMs = 87400;
+    game.sceneTimesMs = [20000, 32000];
+    game.sceneScores = [100, 40];
+    game.sceneElapsedMs = 32000;
     return true;
   }
 
@@ -73,12 +76,15 @@ export function stageShot(api, params) {
     const scene = SCENES[2];
     game.found = new Set(scene.differences.map((d) => d.id));
     game.foundOrder = scene.differences.map((d) => d.id);
-    game.score = 2340;
+    // Scenes: 20 s -> +100, 32 s -> +40, 44 s -> max(0, 200 - 5*44) = 0.
+    // Finds 21 x 100 = 2100, bonuses 100 + 40 + 0 = 140, total 2240.
+    // Total time 20 + 32 + 44 = 96 s = 1:36.
+    game.score = 2240;
     game.clicks = 24;
     game.wrongClicks = 3;
-    game.sceneTimesMs = [87400, 121000, 156000];
-    game.sceneScores = [160, 120, 90];
-    game.sceneElapsedMs = 156000;
+    game.sceneTimesMs = [20000, 32000, 44000];
+    game.sceneScores = [100, 40, 0];
+    game.sceneElapsedMs = 44000;
     return true;
   }
 
